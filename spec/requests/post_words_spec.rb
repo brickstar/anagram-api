@@ -10,7 +10,6 @@ describe "POST /words.json" do
     post "/words.json", params: params
 
     expect(Word.all.count).to eq(3)
-    binding.pry
   end
 
 end
