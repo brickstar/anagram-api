@@ -5,4 +5,9 @@ class WordsController < ApplicationController
     end
     render status: 201
   end
+
+  def destroy
+    word = Word.find_by_word(params[:slug])
+    word.destroy
+  end
 end
