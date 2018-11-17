@@ -53,4 +53,21 @@ describe "Anagrams API" do
     end
   end
 
+  describe "DELETE /words.json" do
+    it "should delete entire dataset" do
+      anagram = Anagram.create(anagram: "ader")
+      word_1 = Word.create(word: "read", anagram: anagram)
+      word_2 = Word.create(word: "dare", anagram: anagram)
+      word_2 = Word.create(word: "dear", anagram: anagram)
+
+      expect(Word.all.count).to eq(3)
+
+      delete "/words.json"
+
+      expect(response.status).to eq(204)
+      expect(Word.all.count).to eq(0)
+      expect(Anagram.all.count).to eq(0)
+    end
+  end
+
 end
