@@ -1,3 +1,4 @@
 class Word < ApplicationRecord
-  belongs_to :anagram
+  validates :word, presence: true, uniqueness: true
+  belongs_to :anagram, optional: true
 end
