@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
-  post '/words.json', to: "words#create"
+  post '/words', to: "words#create"
+  delete '/words/:slug', to: "words#destroy"
   get '/anagrams/:slug', to: "anagrams#show"
 end
