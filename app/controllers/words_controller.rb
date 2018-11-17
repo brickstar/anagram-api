@@ -7,7 +7,12 @@ class WordsController < ApplicationController
   end
 
   def destroy
-    word = Word.find_by_word(params[:slug])
-    word.destroy
+    if params[:slug]
+      word = Word.find_by_word(params[:slug])
+      word.destroy
+    else
+      Word.destroy_all
+      Anagram.destroy_all
+    end
   end
 end
