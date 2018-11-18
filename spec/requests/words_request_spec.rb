@@ -37,6 +37,26 @@ describe "Anagrams API" do
     end
   end
 
+  describe "GET /anagrams/:word.json, limit=1" do
+    it "should return a JSON array of anagrams limited for :word" do
+      anagram = Anagram.create(anagram: "ader")
+      word_1 = Word.create(word: "read", anagram: anagram)
+      word_2 = Word.create(word: "dare", anagram: anagram)
+      word_2 = Word.create(word: "dear", anagram: anagram)
+
+      get "/anagrams/#{word_1.word}.json?limit=1"
+
+      expect(response).to be_successful
+
+      response = JSON.parse(body, symbolize_names: true)
+      words = response[:anagrams]
+
+      expect(response).to have_key(:anagrams)
+      expect(words).to be_a(Array)
+      expect(words.length).to eq(1)
+    end
+  end
+
   describe "DELETE /words/:word.json" do
     it "should delete specified word from dataset" do
       anagram = Anagram.create(anagram: "ader")
