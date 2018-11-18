@@ -1,11 +1,17 @@
 class Anagram < ApplicationRecord
   has_many :words
 
-  def self.anagrams(params)
-    {
-      anagrams: includes(:words).find_by(anagram: params.chars.sort.join).words.pluck(:word).tap do |words|
-                  words.delete(params)
-                end
-    }
+  def self.anagrams(slug, limit = 0)
+    if limit
+      {
+        anagrams: includes(:words).find_or_create_by(anagram: slug.chars.sort.join).words.pluck(:word).take(limit.to_i)
+      }
+    else
+      {
+        anagrams: includes(:words).find_or_create_by(anagram: slug.chars.sort.join).words.pluck(:word).tap do |words|
+          words.delete(slug)
+        end
+      }
+    end
   end
 end
