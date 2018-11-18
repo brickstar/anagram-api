@@ -10,13 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_16_044626) do
+ActiveRecord::Schema.define(version: 2018_11_18_042423) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "anagrams", force: :cascade do |t|
     t.string "anagram"
+    t.integer "words_count", default: 0
   end
 
   create_table "words", force: :cascade do |t|
