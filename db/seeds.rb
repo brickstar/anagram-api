@@ -1,11 +1,11 @@
 Word.delete_all
 Anagram.delete_all
 
-Zlib::GzipReader.open('dictionary.txt.gz') do | input_stream |
-  File.open("dictionary.txt", "w") do |output_stream|
-    IO.copy_stream(input_stream, output_stream)
-  end
-end
+# Zlib::GzipReader.open('dictionary.txt.gz') do | input_stream |
+#   File.open("dictionary.txt", "w") do |output_stream|
+#     IO.copy_stream(input_stream, output_stream)
+#   end
+# end
 
 raw_dictionary = File.read('dictionary.xml')
 
