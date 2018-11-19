@@ -29,7 +29,18 @@ class AnagramsPresenter
     end
   end
 
+  def most_anagrams
+    {
+      count: anagrams_with_most_words.count,
+      words: anagrams_with_most_words.map { |anagram| anagram.words.map { |word| word.word }}
+    }
+  end
+
   private
+
+    def anagrams_with_most_words
+      Anagram.includes(:words).where(words_count: Anagram.maximum(:words_count))
+    end
 
     def grouped_by_words_count(limit)
       anagrams_by_words_size(limit).group_by { |anagram| anagram.words_count }

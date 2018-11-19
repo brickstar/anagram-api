@@ -171,7 +171,12 @@ describe "Anagrams API" do
 
       expect(response).to be_successful
 
-      binding.pry
+      response = JSON.parse(body, symbolize_names: true)
+
+      expect(response).to have_key(:count)
+      expect(response).to have_key(:words)
+      expect(response[:count]).to eq(2)
+      expect(response[:words]).to eq([["read", "dare", "dear"], ["hame", "haem", "ahem"]])
     end
   end
 
