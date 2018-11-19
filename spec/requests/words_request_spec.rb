@@ -151,4 +151,28 @@ describe "Anagrams API" do
     end
   end
 
+  describe "GET /words-with-most-anagrams" do
+    it "should return words with most anagrams" do
+      anagram_1 = Anagram.create(anagram: "ader")
+      word_1 = Word.create(word: "read", anagram: anagram_1)
+      word_2 = Word.create(word: "dare", anagram: anagram_1)
+      word_3 = Word.create(word: "dear", anagram: anagram_1)
+
+      anagram_2 = Anagram.create(anagram: "aehm")
+      word_4 = Word.create(word: "hame", anagram: anagram_2)
+      word_5 = Word.create(word: "haem", anagram: anagram_2)
+      word_6 = Word.create(word: "ahem", anagram: anagram_2)
+
+      anagram_3 = Anagram.create(anagram: "abg")
+      word_7 = anagram_3.words.create(word: "bag")
+      word_8 = anagram_3.words.create(word: "gab")
+
+      get "/words-with-most-anagrams"
+
+      expect(response).to be_successful
+
+      binding.pry
+    end
+  end
+
 end
