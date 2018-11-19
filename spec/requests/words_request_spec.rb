@@ -144,7 +144,7 @@ describe "Anagrams API" do
       expect(Anagram.count).to eq(1)
       expect(Word.count).to eq(3)
 
-      delete "/delete-anagrams-of-word/#{word_1.word}"
+      delete "/delete-anagrams-for-word/#{word_1.word}"
 
       expect(Anagram.count).to eq(0)
       expect(Word.count).to eq(0)

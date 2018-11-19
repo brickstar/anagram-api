@@ -1,20 +1,20 @@
 class AnagramsPresenter
 
-  def anagrams(slug, limit = 0)
+  def anagrams(word, limit = 0)
     if limit
       {
         anagrams: Anagram.includes(:words)
-                  .find_or_create_by(anagram: slug.chars.sort.join)
+                  .find_or_create_by(anagram: word.chars.sort.join)
                   .words.pluck(:word)
                   .take(limit.to_i)
       }
     else
       {
         anagrams: Anagram.includes(:words)
-                  .find_or_create_by(anagram: slug.chars.sort.join)
+                  .find_or_create_by(anagram: word.chars.sort.join)
                   .words.pluck(:word)
                   .tap do |words|
-                    words.delete(slug)
+                    words.delete(word)
                   end
       }
     end
