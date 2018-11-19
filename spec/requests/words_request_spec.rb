@@ -128,7 +128,7 @@ describe "Anagrams API" do
       response = JSON.parse(body, symbolize_names: true)
       expect(response).to be_a(Array)
       expect(response.count).to eq(2)
-      expect(response[0]).to have_key(:words_count)
+      expect(response[0]).to have_key(:anagrams_count)
       expect(response[0]).to have_key(:words)
       expect(response[0][:words]).to be_a(Array)
     end

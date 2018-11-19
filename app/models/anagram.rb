@@ -24,7 +24,7 @@ class Anagram < ApplicationRecord
   def self.by_word_group_size(limit)
     grouped_by_words_count(limit).map do |words_count, anagram|
       {
-        words_count: words_count,
+        anagrams_count: words_count,
         words: anagram.map { |anagram| anagram.words.map { |word| word.word } }
       }
     end
