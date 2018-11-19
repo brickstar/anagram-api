@@ -134,4 +134,21 @@ describe "Anagrams API" do
     end
   end
 
+  describe "DELETE /delete-anagrams-of-word/:word" do
+    it "should delete the word and all its anagrams" do
+      anagram = Anagram.create(anagram: "akos")
+      word_1 = Word.create(word: "soka", anagram: anagram)
+      word_2 = Word.create(word: "soak", anagram: anagram)
+      word_3 = Word.create(word: "asok", anagram: anagram)
+
+      expect(Anagram.count).to eq(1)
+      expect(Word.count).to eq(3)
+
+      delete "/delete-anagrams-for-word/#{word_1.word}"
+
+      expect(Anagram.count).to eq(0)
+      expect(Word.count).to eq(0)
+    end
+  end
+
 end

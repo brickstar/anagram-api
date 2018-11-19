@@ -1,5 +1,5 @@
 class AnagramsController < ApplicationController
   def show
-    render json: AnagramsPresenter.new.anagrams(params[:slug], params[:limit])
+    render json: AnagramsPresenter.new.anagrams(params[:word], params[:limit])
   end
 end
