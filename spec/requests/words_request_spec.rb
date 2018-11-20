@@ -192,10 +192,10 @@ describe "Anagrams API" do
 
       response = JSON.parse(body, symbolize_names: true)
 
-      expect(response.first).to have_key(:total_word_count)
-      expect(response.first).to have_key(:shortest_word)
-      expect(response.first).to have_key(:longest_word)
-      expect(response.first).to have_key(:avg_word_length)
+      expect(response).to have_key(:total_word_count)
+      expect(response).to have_key(:shortest_word)
+      expect(response).to have_key(:longest_word)
+      expect(response).to have_key(:avg_word_length)
     end
   end
 
