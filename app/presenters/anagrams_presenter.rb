@@ -8,20 +8,20 @@ class AnagramsPresenter
                   .words.pluck(:word)
                   .take(limit.to_i)
       }
-    elsif proper_nouns == "false"
-      anagrams = Anagram.includes(:words).find_or_create_by(anagram: word.chars.sort.join).words.pluck(:word)
-
-      anagrams = anagrams.delete_if do |word|
-        cap?(word)
-      end
-
-      anagrams = anagrams.delete_if do |element|
-        element == word
-      end
-
-      {
-        anagrams: anagrams
-      }
+    # elsif proper_nouns == "false"
+    #   anagrams = Anagram.includes(:words).find_or_create_by(anagram: word.chars.sort.join).words.pluck(:word)
+    #
+    #   anagrams = anagrams.delete_if do |word|
+    #     cap?(word)
+    #   end
+    #
+    #   anagrams = anagrams.delete_if do |element|
+    #     element == word
+    #   end
+    #
+    #   {
+    #     anagrams: anagrams
+    #   }
     else
       {
         anagrams: Anagram.includes(:words)
@@ -64,10 +64,6 @@ class AnagramsPresenter
       Anagram.includes(:words)
       .where("words_count >= #{limit}")
       .order(words_count: :desc)
-    end
-
-    def cap?(word)
-      word == word.capitalize
     end
 
 end
