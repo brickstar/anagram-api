@@ -180,4 +180,23 @@ describe "Anagrams API" do
     end
   end
 
+  describe "GET /words-analytics" do
+    it "should return count of words and min/max/median/average word length" do
+      word_1 = Word.create(word: "abcd")
+      word_2 = Word.create(word: "abcde")
+      word_3 = Word.create(word: "abcdef")
+
+      get '/words-analytics'
+
+      expect(response).to be_successful
+
+      response = JSON.parse(body, symbolize_names: true)
+
+      expect(response).to have_key(:total_word_count)
+      expect(response).to have_key(:shortest_word)
+      expect(response).to have_key(:longest_word)
+      expect(response).to have_key(:avg_word_length)
+    end
+  end
+
 end
