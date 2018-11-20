@@ -4,7 +4,7 @@ class WordsPresenter
       total_word_count: Word.analytics.first.total_word_count,
       shortest_word: Word.analytics.first.shortest_word,
       longest_word: Word.analytics.first.longest_word,
-      avg_word_length: Word.analytics.first.avg_word_length
+      avg_word_length: Word.analytics.first.avg_word_length.round(2)
     }
   end
 end
