@@ -199,4 +199,21 @@ describe "Anagrams API" do
     end
   end
 
+  describe "GET ?proper_nouns=false" do
+    it "should not return proper nouns" do
+      anagram = Anagram.create(anagram: "ader")
+      word_1 = Word.create(word: "Read", anagram: anagram)
+      word_2 = Word.create(word: "dare", anagram: anagram)
+      word_3 = Word.create(word: "dear", anagram: anagram)
+
+      get "/anagrams/dare.json?proper_nouns=false"
+
+      response = JSON.parse(body, symbolize_names: true)
+
+      expect(response[:anagrams]).to eq(["dear"])
+      expect(response[:anagrams].include?("Read")).to eq(false)
+    end
+  end
+
+
 end
