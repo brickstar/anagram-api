@@ -1,5 +1,5 @@
 class WordAnalyticsController < ApplicationController
   def index
-    render json: Anagram.anagram_info
+    render json: Word.analytics
   end
 end
