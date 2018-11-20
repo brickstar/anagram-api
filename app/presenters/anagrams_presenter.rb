@@ -31,7 +31,7 @@ class AnagramsPresenter
 
   def most_anagrams
     {
-      count: anagrams_with_most_words.count,
+      word_count: anagrams_with_most_words.first.words_count,
       words: anagrams_with_most_words.map { |anagram| anagram.words.map { |word| word.word }}
     }
   end
