@@ -8,4 +8,8 @@ class Word < ApplicationRecord
                  AVG(char_length(word)) AS avg_word_length,
                  COUNT(words.id) AS total_word_count FROM words")
   end
+
+  def self.median_word_length
+    median(:word_length)
+  end
 end
