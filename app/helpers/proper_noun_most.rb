@@ -8,10 +8,6 @@ module ProperNounMost
     end
   end
 
-  def anagrams_with_most_words
-    Anagram.includes(:words).where(words_count: Anagram.maximum(:words_count))
-  end
-
   def capitalized?(word)
     word == word.capitalize
   end
