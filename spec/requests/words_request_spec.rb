@@ -134,6 +134,49 @@ describe "Anagrams API" do
     end
   end
 
+  describe 'GET /anagrams/size=x?proper_nouns=false' do
+    it 'should return all anagram groups of size >= x without proper nouns' do
+      anagram_1 = Anagram.create(anagram: "ader")
+      word_1 = Word.create(word: "read", anagram: anagram_1)
+      word_2 = Word.create(word: "Dare", anagram: anagram_1)
+      word_3 = Word.create(word: "dear", anagram: anagram_1)
+
+      anagram_2 = Anagram.create(anagram: "aehm")
+      word_4 = Word.create(word: "hame", anagram: anagram_2)
+      word_5 = Word.create(word: "haem", anagram: anagram_2)
+      word_6 = Word.create(word: "Ahem", anagram: anagram_2)
+
+      anagram_3 = Anagram.create(anagram: "akos")
+      word_7 = Word.create(word: "soka", anagram: anagram_3)
+      word_8 = Word.create(word: "soak", anagram: anagram_3)
+      word_9 = Word.create(word: "Asok", anagram: anagram_3)
+
+      anagram_4 = Anagram.create(anagram: "aaeglr")
+      word_10 = Word.create(word: "Laager", anagram: anagram_4)
+      word_11 = Word.create(word: "galera", anagram: anagram_4)
+      word_12 = Word.create(word: "alegar", anagram: anagram_4)
+      word_13 = Word.create(word: "aglare", anagram: anagram_4)
+
+      anagram_5 = Anagram.create(anagram: "chipty")
+      word_14 = Word.create(word: "typhic", anagram: anagram_5)
+      word_15 = Word.create(word: "pythic", anagram: anagram_5)
+      word_16 = Word.create(word: "Pitchy", anagram: anagram_5)
+      word_17 = Word.create(word: "phytic", anagram: anagram_5)
+
+      get "/word-group-size.json?limit=#{anagram_1.words.count}&proper_nouns=false"
+
+      expect(response).to be_successful
+      expect(response.status).to eq(200)
+
+      response = JSON.parse(body, symbolize_names: true)
+      expect(response).to be_a(Array)
+      expect(response.count).to eq(2)
+      expect(response[0]).to have_key(:anagrams_count)
+      expect(response[0]).to have_key(:words)
+      expect(response[0][:words]).to be_a(Array)
+    end
+  end
+
   describe "DELETE /delete-anagrams-of-word/:word" do
     it "should delete the word and all its anagrams" do
       anagram = Anagram.create(anagram: "akos")

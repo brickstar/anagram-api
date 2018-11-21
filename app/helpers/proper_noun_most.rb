@@ -8,25 +8,23 @@ module ProperNounMost
     end
   end
 
-  private
-  
-    def anagrams_with_most_words
-      Anagram.includes(:words).where(words_count: Anagram.maximum(:words_count))
-    end
+  def anagrams_with_most_words
+    Anagram.includes(:words).where(words_count: Anagram.maximum(:words_count))
+  end
 
-    def capitalized?(word)
-      word == word.capitalize
-    end
+  def capitalized?(word)
+    word == word.capitalize
+  end
 
-    def most_anagrams
-      AnagramsPresenter.new.most_anagrams
-    end
+  def most_anagrams
+    AnagramsPresenter.new.most_anagrams
+  end
 
-    def words_without_proper_nouns
-      most_anagrams[:words].each do |word_array|
-        word_array.delete_if do |word|
-          capitalized?(word)
-        end
+  def words_without_proper_nouns
+    most_anagrams[:words].each do |word_array|
+      word_array.delete_if do |word|
+        capitalized?(word)
       end
     end
+  end
 end
