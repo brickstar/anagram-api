@@ -287,5 +287,18 @@ describe "Anagrams API" do
     end
   end
 
+  describe "GET /check-anagrams" do
+    it "should validate anagrams" do
+      anagram_1 = Anagram.create(anagram: "ader")
+      word_1 = Word.create(word: "read", anagram: anagram_1)
+      word_2 = Word.create(word: "dare", anagram: anagram_1)
+      word_3 = Word.create(word: "dear", anagram: anagram_1)
 
+      get '/check-anagrams'
+
+      response = JSON.parse(resposne.body, symbolize_names: true)
+      
+      expect(response[:anagrams?]).to eq(true)
+    end
+  end
 end
