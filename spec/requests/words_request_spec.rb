@@ -199,7 +199,7 @@ describe "Anagrams API" do
     end
   end
 
-  describe "GET ?proper_nouns=false" do
+  describe "GET /anagrams/:word.json?proper_nouns=false" do
     it "should not return proper nouns" do
       anagram = Anagram.create(anagram: "ader")
       word_1 = Word.create(word: "Read", anagram: anagram)

@@ -3,30 +3,12 @@ class AnagramsPresenter
   def anagrams(word, limit = 0, proper_nouns = nil)
     if limit
       {
-        anagrams: Anagram.includes(:words)
-                  .find_or_create_by(anagram: word.chars.sort.join)
-                  .words.pluck(:word)
+        anagrams: find_anagrams(word)
                   .take(limit.to_i)
       }
-    # elsif proper_nouns == "false"
-    #   anagrams = Anagram.includes(:words).find_or_create_by(anagram: word.chars.sort.join).words.pluck(:word)
-    #
-    #   anagrams = anagrams.delete_if do |word|
-    #     cap?(word)
-    #   end
-    #
-    #   anagrams = anagrams.delete_if do |element|
-    #     element == word
-    #   end
-    #
-    #   {
-    #     anagrams: anagrams
-    #   }
     else
       {
-        anagrams: Anagram.includes(:words)
-                  .find_or_create_by(anagram: word.chars.sort.join)
-                  .words.pluck(:word)
+        anagrams: find_anagrams(word)
                   .tap do |words|
                     words.delete(word)
                   end
@@ -51,6 +33,11 @@ class AnagramsPresenter
   end
 
   private
+    def find_anagrams(word)
+      Anagram.includes(:words)
+             .find_by(anagram: word.chars.sort.join)
+             .words.pluck(:word)
+    end
 
     def anagrams_with_most_words
       Anagram.includes(:words).where(words_count: Anagram.maximum(:words_count))
@@ -62,7 +49,7 @@ class AnagramsPresenter
 
     def anagrams_by_words_size(limit)
       Anagram.includes(:words)
-      .where("words_count >= #{limit}")
+      .where("words_count >= ?", "#{limit}")
       .order(words_count: :desc)
     end
 
