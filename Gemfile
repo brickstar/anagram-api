@@ -24,7 +24,6 @@ gem 'puma', '~> 3.11'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.1.0', require: false
-gem 'active_model_serializers'
 gem 'pry-rails'
 gem 'simplecov', require: false, group: :test
 gem 'active_median'
