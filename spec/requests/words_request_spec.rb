@@ -288,17 +288,34 @@ describe "Anagrams API" do
   end
 
   describe "GET /check-anagrams" do
-    it "should validate anagrams" do
+    it "should validate if all are anagrams of each other" do
       anagram_1 = Anagram.create(anagram: "ader")
       word_1 = Word.create(word: "read", anagram: anagram_1)
       word_2 = Word.create(word: "dare", anagram: anagram_1)
       word_3 = Word.create(word: "dear", anagram: anagram_1)
+      params = { "words": ["read", "dear", "dare"] }
 
-      get '/check-anagrams'
+      get "/check-anagrams", params: params
 
-      response = JSON.parse(resposne.body, symbolize_names: true)
-      
+      response = JSON.parse(body, symbolize_names: true)
+
       expect(response[:anagrams?]).to eq(true)
+
+      params = { "words": ["read", "dear", "dare", "a"] }
+
+      get "/check-anagrams", params: params
+
+      response = JSON.parse(body, symbolize_names: true)
+
+      expect(response[:anagrams?]).to eq(false)
+
+      params = { "words": ["read", "dear", "dare", "a", "ab"] }
+
+      get "/check-anagrams", params: params
+
+      response = JSON.parse(body, symbolize_names: true)
+
+      expect(response[:anagrams?]).to eq(false)
     end
   end
 end
