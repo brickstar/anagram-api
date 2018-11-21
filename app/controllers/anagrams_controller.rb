@@ -1,5 +1,5 @@
 class AnagramsController < ApplicationController
-  include ProperNoun
+  include ProperNounAnagrams
   before_action :delete_proper_nouns
 
   def show

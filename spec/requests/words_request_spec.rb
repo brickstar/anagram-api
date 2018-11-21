@@ -180,6 +180,35 @@ describe "Anagrams API" do
     end
   end
 
+  describe "GET /words-with-most-anagrams?proper_nouns=false" do
+    it "should return words with most anagrams without proper nouns" do
+      anagram_1 = Anagram.create(anagram: "ader")
+      word_1 = Word.create(word: "read", anagram: anagram_1)
+      word_2 = Word.create(word: "Dare", anagram: anagram_1)
+      word_3 = Word.create(word: "dear", anagram: anagram_1)
+
+      anagram_2 = Anagram.create(anagram: "aehm")
+      word_4 = Word.create(word: "hame", anagram: anagram_2)
+      word_5 = Word.create(word: "haem", anagram: anagram_2)
+      word_6 = Word.create(word: "Ahem", anagram: anagram_2)
+
+      anagram_3 = Anagram.create(anagram: "abg")
+      word_7 = anagram_3.words.create(word: "bag")
+      word_8 = anagram_3.words.create(word: "gab")
+
+      get "/words-with-most-anagrams.json?proper_nouns=false"
+
+      expect(response).to be_successful
+
+      response = JSON.parse(body, symbolize_names: true)
+
+      expect(response).to have_key(:word_count)
+      expect(response).to have_key(:words)
+      expect(response[:word_count]).to eq(2)
+      expect(response[:words]).to eq([["read", "dear"], ["hame", "haem"]])
+    end
+  end
+
   describe "GET /words-analytics" do
     it "should return count of words and min/max/median/average word length" do
       word_1 = Word.create(word: "abcd")
