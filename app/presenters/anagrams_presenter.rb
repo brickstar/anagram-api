@@ -31,7 +31,7 @@ class AnagramsPresenter
   end
 
   private
-  
+
     def serialized_words_by_size(anagrams)
       words_by_size(anagrams).each_slice(anagrams.first.words_count)
     end
@@ -52,7 +52,6 @@ class AnagramsPresenter
       anagrams_with_most_words
         .pluck(:word)
     end
-
 
     def find_anagrams(word)
       Anagram.includes(:words)
