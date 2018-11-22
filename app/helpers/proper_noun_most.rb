@@ -18,9 +18,11 @@ module ProperNounMost
 
   def words_without_proper_nouns
     most_anagrams[:words].each do |word_array|
-      word_array.delete_if do |word|
-        capitalized?(word)
-      end
+      delete_capitalized_words(word_array)
     end
+  end
+
+  def delete_capitalized_words(word_array)
+    word_array.delete_if { |word| capitalized?(word) }
   end
 end
