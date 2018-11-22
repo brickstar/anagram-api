@@ -55,7 +55,7 @@ class AnagramsPresenter
 
     def find_anagrams(word)
       Anagram.includes(:words)
-        .find_or_create_by(anagram: word.chars.sort.join)
+        .find_by(anagram: word.chars.sort.join)
         .words
         .pluck(:word)
     end
