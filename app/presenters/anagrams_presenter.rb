@@ -61,7 +61,7 @@ class AnagramsPresenter
     end
 
     def count_of_largest_anagram_set
-      Anagram.maximum(:words_count)
+      @_count ||= Anagram.maximum(:words_count)
     end
 
     def anagrams_with_most_words

@@ -1,4 +1,5 @@
 module ProperNounMost
+  include ApplicationHelper
   def delete_proper_nouns
     if params[:proper_nouns] == "false"
       render json: {
@@ -6,10 +7,6 @@ module ProperNounMost
                       words: words_without_proper_nouns
                    }
     end
-  end
-
-  def capitalized?(word)
-    word == word.capitalize
   end
 
   def most_anagrams
@@ -22,7 +19,4 @@ module ProperNounMost
     end
   end
 
-  def delete_capitalized_words(word_array)
-    word_array.delete_if { |word| capitalized?(word) }
-  end
 end

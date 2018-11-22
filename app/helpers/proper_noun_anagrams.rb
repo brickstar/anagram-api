@@ -1,4 +1,5 @@
 module ProperNounAnagrams
+  include ApplicationHelper
   def delete_proper_nouns
     if params[:proper_nouns] == "false"
       render json: {
@@ -17,7 +18,4 @@ module ProperNounAnagrams
     end
   end
 
-  def capitalized?(word)
-    word == word.capitalize
-  end
 end
