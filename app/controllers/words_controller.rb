@@ -8,12 +8,13 @@ class WordsController < ApplicationController
   end
 
   def destroy
-    if params[:word].nil?
+    if params[:word].nil? || params[:word].empty?
       Word.delete_all
       Anagram.delete_all
     else
       word = Word.find_by_word(params[:word])
       word.destroy
     end
+    render status: 204
   end
 end
