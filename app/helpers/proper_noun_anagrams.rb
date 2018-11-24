@@ -3,7 +3,14 @@ module ProperNounAnagrams
   def delete_proper_nouns
     if params[:proper_nouns] == "false"
       render json: {
-                      anagrams: without_proper_nouns
+                      word: params[:word],
+                      anagrams_without_proper_nouns: without_proper_nouns
+                   }
+    else
+      render json: {
+                      word: "#{params[:word]}",
+                      anagrams: Anagram.includes(:words).find_by(anagram: params[:word].downcase.chars.sort.join)
+                                  .words.pluck(:word).tap { |words| words.delete(params[:word]) }
                    }
     end
   end

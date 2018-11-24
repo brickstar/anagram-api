@@ -2,7 +2,7 @@ module ProperNounWordGroupSize
   include ApplicationHelper
   def delete_proper_nouns
     if params[:proper_nouns] == "false"
-      render json: words_without_proper_nouns
+      render json: words_without_proper_nouns, status: 200
     end
   end
 
@@ -11,11 +11,11 @@ module ProperNounWordGroupSize
   end
 
   def words_without_proper_nouns
-    get_anagrams_by_word_group_size.each do |element|
-      element[:words].each do |ary|
-        delete_capitalized_words(ary)
-      end
+    get_anagrams_by_word_group_size.reduce(Array.new) do |ary, element, hash = Hash.new([])|
+      hash[:anagrams_count] = element[:anagrams_count]
+      hash[:words] = element[:words].to_a.flatten.each_slice(element[:anagrams_count]).map { |ary| delete_capitalized_words(ary)}
+      ary << hash
+      ary
     end
   end
-
 end
