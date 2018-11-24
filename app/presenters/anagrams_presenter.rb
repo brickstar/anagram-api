@@ -25,7 +25,7 @@ include ApplicationHelper
   end
 
   def anagrams_by_limit(limit)
-    @anagrams = find_anagrams(@word).take(limit.to_i)
+    @anagrams = find_anagrams(@word).take(limit.to_i).tap { |words| words.delete(@word) }
   end
 
   def by_word_group_size(limit)
