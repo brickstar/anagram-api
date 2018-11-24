@@ -282,8 +282,8 @@ describe "Anagrams API" do
 
       response = JSON.parse(body, symbolize_names: true)
 
-      expect(response[:anagrams]).to eq(["dear"])
-      expect(response[:anagrams].include?("Read")).to eq(false)
+      expect(response[:anagrams_without_proper_nouns]).to eq(["dear"])
+      expect(response[:anagrams_without_proper_nouns].include?("Read")).to eq(false)
     end
   end
 
