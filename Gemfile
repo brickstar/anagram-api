@@ -41,6 +41,7 @@ group :development, :test do
   gem 'database_cleaner'
   gem 'shoulda-matchers'
   gem 'faraday'
+  gem 'pry-state'
 end
 
 group :development do
