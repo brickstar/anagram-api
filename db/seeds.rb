@@ -20,5 +20,5 @@ anagram_hash.map.with_index do |anagram, index|
 end
 
 anagram = Anagram.find_or_create_by(anagram: "dog".chars.sort.join)
-anagram.words.create(word: "dog")
-anagram.words.create(word: "God")
+anagram.words.create(word: "dog", word_length: 3)
+anagram.words.create(word: "God", word_length: 3)

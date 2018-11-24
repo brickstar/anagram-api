@@ -7,11 +7,13 @@ module ProperNounAnagrams
                       anagrams_without_proper_nouns: without_proper_nouns
                    }
     else
-      render json: {
-                      word: "#{params[:word]}",
-                      anagrams: Anagram.includes(:words).find_by(anagram: params[:word].downcase.chars.sort.join)
-                                  .words.pluck(:word).tap { |words| words.delete(params[:word]) }
-                   }
+      if params[:limit].nil?
+        render json: {
+                        word: "#{params[:word]}",
+                        anagrams: Anagram.includes(:words).find_by(anagram: params[:word].downcase.chars.sort.join)
+                                    .words.pluck(:word).tap { |words| words.delete(params[:word]) }
+                     }
+      end
     end
   end
 
