@@ -1,17 +1,16 @@
 class AnagramsPresenter
+include ApplicationHelper
 
-  def anagrams(word, limit = 0, proper_nouns = nil)
-    if limit
-      {
-        word: word,
-        anagrams: find_anagrams(word).take(limit.to_i)
-      }
-    else
-      {
-        word: word,
-        anagrams: find_anagrams(word).tap { |words| words.delete(word) }
-      }
-    end
+  def initialize(word = nil)
+    @word = word
+    @anagrams = []
+  end
+
+  def anagrams(limit = nil, proper_nouns = nil)
+    apply_limit(limit) if limit
+    delete_proper_nouns if proper_nouns == "false"
+    all_anagrams if proper_nouns != "false" && limit.nil?
+    { word: @word, anagrams: @anagrams }
   end
 
   def by_word_group_size(limit)
@@ -31,6 +30,25 @@ class AnagramsPresenter
   end
 
   private
+    def all_anagrams
+      @anagrams = find_anagrams(@word)
+      remove_query_word
+    end
+
+    def delete_proper_nouns
+      @anagrams = find_anagrams(@word).delete_if do |word|
+        capitalized?(word)
+      end
+      remove_query_word
+    end
+
+    def apply_limit(limit)
+      @anagrams = find_anagrams(@word).tap { |words| words.delete(@word) }.take(limit.to_i)
+    end
+
+    def remove_query_word
+      @anagrams.tap { |words| words.delete(@word) }
+    end
 
     def serialized_words_by_size(anagrams)
       words_by_size(anagrams).each_slice(anagrams.first.words_count)
