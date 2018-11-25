@@ -4,6 +4,7 @@ include ApplicationHelper
   def initialize(word = nil)
     @word = word
     @anagrams = []
+    @finder = AnagramFinder.new(word)
   end
 
   def anagrams(limit = nil, proper_nouns = nil)
@@ -30,31 +31,31 @@ include ApplicationHelper
 
   private
     def all_anagrams
-      @anagrams = find_anagrams(@word)
+      @anagrams = @finder.find_anagrams
       remove_query_word
     end
 
     def delete_proper_nouns
-      @anagrams = find_anagrams(@word).delete_if do |word|
+      @anagrams = @finder.find_anagrams.delete_if do |word|
         capitalized?(word)
       end
       remove_query_word
     end
 
     def apply_limit(limit)
-      @anagrams = find_anagrams(@word).tap { |words| words.delete(@word) }.take(limit.to_i)
+      @anagrams = @finder.find_anagrams.tap { |words| words.delete(@word) }.take(limit.to_i)
     end
 
     def remove_query_word
       @anagrams.tap { |words| words.delete(@word) }
     end
 
-    def find_anagrams(word)
-      Anagram.includes(:words)
-      .find_by(anagram: word.downcase.chars.sort.join)
-      .words
-      .pluck(:word)
-    end
+    # def find_anagrams(word)
+    #   Anagram.includes(:words)
+    #   .find_by(anagram: word.downcase.chars.sort.join)
+    #   .words
+    #   .pluck(:word)
+    # end
 
     def build_anagram_groups_by_size(size)
       group_keys_by_words_count(size).map do |words_count, keys|
