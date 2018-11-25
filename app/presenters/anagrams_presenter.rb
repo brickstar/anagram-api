@@ -8,6 +8,7 @@ include ApplicationHelper
   end
 
   def anagrams(limit = nil, proper_nouns = nil)
+    return limit_error if invalid_limit?(limit)
     apply_limit(limit) if limit
     delete_proper_nouns if proper_nouns == "false"
     all_anagrams if proper_nouns != "false" && limit.nil?
@@ -44,6 +45,14 @@ include ApplicationHelper
 
     def apply_limit(limit)
       @anagrams = @finder.find_anagrams.tap { |words| words.delete(@word) }.take(limit.to_i)
+    end
+
+    def invalid_limit?(limit)
+      limit.to_i < 0
+    end
+
+    def limit_error
+      { message: "invalid limit, must be 0 or greater"}
     end
 
     def remove_query_word
