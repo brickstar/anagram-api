@@ -22,9 +22,10 @@ include ApplicationHelper
   end
 
   def most_anagrams
+    binding.pry
     {
-      word_count: anagrams_with_most_words.first.words_count,
-      words: serialized_words_from_largest_anagram_set
+      anagrams_count: words_with_most_anagrams.first.words_count,
+      anagrams: serialized_words_from_largest_anagram_set
     }
   end
 
@@ -97,7 +98,7 @@ include ApplicationHelper
       @_count ||= Anagram.maximum(:words_count)
     end
 
-    def anagrams_with_most_words
+    def words_with_most_anagrams
       Anagram.includes(:words).where(words_count: count_of_largest_anagram_set)
     end
 
