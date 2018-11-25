@@ -298,6 +298,8 @@ describe "Anagrams API" do
 
       get "/anagrams/notaword"
 
+      expect(response.status).to eq(200)
+      
       response = JSON.parse(body, symbolize_names: true)
 
       expect(response).to eq({ anagrams: [], "notaword": "not_found"})
@@ -314,11 +316,13 @@ describe "Anagrams API" do
       expect(response).to eq({ message: "please specify an integer size greater than 1 or less than 8"})
     end
   end
-  
+
   describe "GET /word-group-size?size=x" do
     it "should return clarifying size examples" do
 
       get "/word-group-size?size=x"
+
+      expect(response.status).to eq(400)
 
       response = JSON.parse(body, symbolize_names: true)
 

@@ -13,7 +13,7 @@ include ApplicationHelper
     { word: @word, anagrams: @anagrams }
   end
 
-  def anagram_groups_greater_than_or_equal_to_size(size, proper_nouns = nil)
+  def anagram_groups_by_size(size, proper_nouns = nil)
     if proper_nouns == "false"
       without_proper_nouns(size)
     else
