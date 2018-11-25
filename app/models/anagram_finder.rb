@@ -5,9 +5,9 @@ class AnagramFinder
 
   def find_anagrams
     Anagram.includes(:words)
-    .find_by(anagram: @word.downcase.chars.sort.join)
-    .words
-    .pluck(:word)
+      .find_by(anagram: @word.downcase.chars.sort.join)
+      .words
+      .pluck(:word)
   end
 
   def group_keys_by_words_count(size)
