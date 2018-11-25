@@ -29,7 +29,6 @@ class AnagramFinder
         .order(words_count: :desc)
     end
 
-
     def keys_with_most_anagrams
       Anagram.includes(:words).where(words_count: count_of_largest_anagram_set)
     end
