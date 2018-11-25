@@ -13,12 +13,11 @@ include ApplicationHelper
     { word: @word, anagrams: @anagrams }
   end
 
-  def by_word_group_size(limit)
-    grouped_by_words_count(limit).map do |words_count, anagrams|
-      {
-        anagrams_count: words_count,
-        words: serialized_words_by_size(anagrams)
-      }
+  def anagram_groups_greater_than_or_equal_to_size(size, proper_nouns = nil)
+    if proper_nouns == "false"
+      without_proper_nouns(size)
+    else
+      build_anagram_groups_by_size(size)
     end
   end
 
@@ -50,32 +49,48 @@ include ApplicationHelper
       @anagrams.tap { |words| words.delete(@word) }
     end
 
-    def serialized_words_by_size(anagrams)
-      words_by_size(anagrams).each_slice(anagrams.first.words_count)
+    def find_anagrams(word)
+      Anagram.includes(:words)
+      .find_by(anagram: word.downcase.chars.sort.join)
+      .words
+      .pluck(:word)
     end
 
-    def words_by_size(anagrams)
-      get_words_from_anagrams(anagrams).flatten.map { |word| word.word }
+    def build_anagram_groups_by_size(size)
+      group_keys_by_words_count(size).map do |words_count, keys|
+        { sets_of: words_count, anagrams: get_anagrams_from_keys(keys) }
+      end
+    end
+
+    def group_keys_by_words_count(size)
+      get_keys_greater_than_or_equal_to_size(size).group_by { |anagram| anagram.words_count }
+    end
+
+    def get_keys_greater_than_or_equal_to_size(size)
+      Anagram.includes(:words)
+      .where("words_count >= ?", size)
+      .order(words_count: :desc)
+    end
+
+    def get_anagrams_from_keys(keys)
+      keys.map { |key| key.words.pluck(:word) }
+    end
+
+    def without_proper_nouns(size)
+      build_anagram_groups_by_size(size).inject(Array.new) do |ary, element, hash = Hash.new([])|
+        hash[:sets_of] = element[:sets_of]
+        hash[:anagrams] = element[:anagrams].map { |anagrams| delete_capitalized_words(anagrams) }
+        ary << hash
+        ary
+      end
     end
 
     def serialized_words_from_largest_anagram_set(anagram = nil)
       words_from_largest_anagrams.each_slice(count_of_largest_anagram_set).to_a
     end
 
-    def get_words_from_anagrams(anagrams)
-      anagrams.map { |anagram| anagram.words }
-    end
-
     def words_from_largest_anagrams
-      anagrams_with_most_words
-        .pluck(:word)
-    end
-
-    def find_anagrams(word)
-      Anagram.includes(:words)
-        .find_by(anagram: word.downcase.chars.sort.join)
-        .words
-        .pluck(:word)
+      anagrams_with_most_words.pluck(:word)
     end
 
     def count_of_largest_anagram_set
@@ -84,16 +99,6 @@ include ApplicationHelper
 
     def anagrams_with_most_words
       Anagram.includes(:words).where(words_count: count_of_largest_anagram_set)
-    end
-
-    def grouped_by_words_count(limit)
-      anagrams_by_words_size(limit).group_by { |anagram| anagram.words_count }
-    end
-
-    def anagrams_by_words_size(limit)
-      Anagram.includes(:words)
-        .where("words_count >= ?", limit)
-        .order(words_count: :desc)
     end
 
 end

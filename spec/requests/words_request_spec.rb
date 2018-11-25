@@ -120,7 +120,7 @@ describe "Anagrams API" do
       word_16 = Word.create(word: "pitchy", anagram: anagram_5)
       word_17 = Word.create(word: "phytic", anagram: anagram_5)
 
-      get "/word-group-size.json?limit=#{anagram_1.words.count}"
+      get "/word-group-size.json?size=#{anagram_1.words.count}"
 
       expect(response).to be_successful
       expect(response.status).to eq(200)
@@ -128,9 +128,9 @@ describe "Anagrams API" do
       response = JSON.parse(body, symbolize_names: true)
       expect(response).to be_a(Array)
       expect(response.count).to eq(2)
-      expect(response[0]).to have_key(:anagrams_count)
-      expect(response[0]).to have_key(:words)
-      expect(response[0][:words]).to be_a(Array)
+      expect(response[0]).to have_key(:sets_of)
+      expect(response[0]).to have_key(:anagrams)
+      expect(response[0][:anagrams]).to be_a(Array)
     end
   end
 
@@ -163,7 +163,7 @@ describe "Anagrams API" do
       word_16 = Word.create(word: "Pitchy", anagram: anagram_5)
       word_17 = Word.create(word: "phytic", anagram: anagram_5)
 
-      get "/word-group-size.json?limit=#{anagram_1.words.count}&proper_nouns=false"
+      get "/word-group-size.json?size=#{anagram_1.words.count}&proper_nouns=false"
 
       expect(response).to be_successful
       expect(response.status).to eq(200)
@@ -171,9 +171,9 @@ describe "Anagrams API" do
       response = JSON.parse(body, symbolize_names: true)
       expect(response).to be_a(Array)
       expect(response.count).to eq(2)
-      expect(response[0]).to have_key(:anagrams_count)
-      expect(response[0]).to have_key(:words)
-      expect(response[0][:words]).to be_a(Array)
+      expect(response[0]).to have_key(:sets_of)
+      expect(response[0]).to have_key(:anagrams)
+      expect(response[0][:anagrams]).to be_a(Array)
     end
   end
 
