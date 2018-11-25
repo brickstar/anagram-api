@@ -289,4 +289,44 @@ describe "Anagrams API" do
       expect(response[:anagrams?]).to eq(false)
     end
   end
+
+  describe "GET /anagrams/notaword.json" do
+    it "should return not found message" do
+      anagram = Anagram.create(anagram: "ader")
+      word_1 = Word.create(word: "read", anagram: anagram)
+      word_2 = Word.create(word: "dare", anagram: anagram)
+
+      get "/anagrams/notaword"
+
+      expect(response.status).to eq(200)
+      
+      response = JSON.parse(body, symbolize_names: true)
+
+      expect(response).to eq({ anagrams: [], "notaword": "not_found"})
+    end
+  end
+
+  describe "GET /word-group-size?size=1" do
+    it "should return clarifying size examples" do
+
+      get "/word-group-size?size=1"
+
+      response = JSON.parse(body, symbolize_names: true)
+
+      expect(response).to eq({ message: "please specify an integer size greater than 1 or less than 8"})
+    end
+  end
+
+  describe "GET /word-group-size?size=x" do
+    it "should return clarifying size examples" do
+
+      get "/word-group-size?size=x"
+
+      expect(response.status).to eq(400)
+
+      response = JSON.parse(body, symbolize_names: true)
+
+      expect(response).to eq({ message: "please specify an integer size greater than 1 or less than 8"})
+    end
+  end
 end
