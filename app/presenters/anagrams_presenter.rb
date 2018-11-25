@@ -22,9 +22,9 @@ include ApplicationHelper
     end
   end
 
-  def self.most_anagrams
+  def most_anagrams
     {
-      anagrams_count: count_of_largest_anagram_set,
+      anagrams_count: @finder.count_of_largest_anagram_set,
       anagrams: serialized_words_from_largest_anagram_set
     }
   end
@@ -50,27 +50,10 @@ include ApplicationHelper
       @anagrams.tap { |words| words.delete(@word) }
     end
 
-    # def find_anagrams(word)
-    #   Anagram.includes(:words)
-    #   .find_by(anagram: word.downcase.chars.sort.join)
-    #   .words
-    #   .pluck(:word)
-    # end
-
     def build_anagram_groups_by_size(size)
-      group_keys_by_words_count(size).map do |words_count, keys|
+      @finder.group_keys_by_words_count(size).map do |words_count, keys|
         { sets_of: words_count, anagrams: get_anagrams_from_keys(keys) }
       end
-    end
-
-    def group_keys_by_words_count(size)
-      get_keys_greater_than_or_equal_to_size(size).group_by { |anagram| anagram.words_count }
-    end
-
-    def get_keys_greater_than_or_equal_to_size(size)
-      Anagram.includes(:words)
-        .where("words_count >= ?", size)
-        .order(words_count: :desc)
     end
 
     def get_anagrams_from_keys(keys)
@@ -92,20 +75,7 @@ include ApplicationHelper
     # seeding the full dictionary where the largest anagram set is more likely
     # to have more than one set of anagrams of the largest size.
     # functionality remains the same with one set vs multiple sets
-    def self.serialized_words_from_largest_anagram_set(anagrams = nil)
-      words_from_largest_anagram_key.each_slice(count_of_largest_anagram_set).to_a
+    def serialized_words_from_largest_anagram_set(anagrams = nil)
+      @finder.words_from_largest_anagram_key.each_slice(@finder.count_of_largest_anagram_set).to_a
     end
-
-    def self.words_from_largest_anagram_key
-      keys_with_most_anagrams.pluck(:word)
-    end
-
-    def self.keys_with_most_anagrams
-      Anagram.includes(:words).where(words_count: count_of_largest_anagram_set)
-    end
-
-    def self.count_of_largest_anagram_set
-      @_count ||= Anagram.maximum(:words_count)
-    end
-
 end
