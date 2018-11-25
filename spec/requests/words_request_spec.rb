@@ -58,6 +58,23 @@ describe "Anagrams API" do
     end
   end
 
+  describe "GET /anagrams/:word.json, limit=-1" do
+    it "should return a message claryfing acceptable limit values" do
+      anagram = Anagram.create(anagram: "ader")
+      word_1 = Word.create(word: "read", anagram: anagram)
+      word_2 = Word.create(word: "dare", anagram: anagram)
+      word_3 = Word.create(word: "dear", anagram: anagram)
+
+      get "/anagrams/#{word_1.word}.json?limit=-1"
+
+      expect(response).to be_successful
+
+      response = JSON.parse(body, symbolize_names: true)
+      message = { :message=>"invalid limit, must be 0 or greater" }
+      expect(response).to eq(message)
+    end
+  end
+
   describe "DELETE /words/:word.json" do
     it "should delete specified word from dataset" do
       anagram = Anagram.create(anagram: "ader")
@@ -91,7 +108,7 @@ describe "Anagrams API" do
     end
   end
 
-  describe 'GET /anagrams/size=x' do
+  describe 'GET /word-group-size/size=x' do
     it 'should return all anagram groups of size >= x' do
       anagram_1 = Anagram.create(anagram: "ader")
       word_1 = Word.create(word: "read", anagram: anagram_1)
@@ -134,7 +151,7 @@ describe "Anagrams API" do
     end
   end
 
-  describe 'GET /anagrams/size=x?proper_nouns=false' do
+  describe 'GET /word-group-size/size=x?proper_nouns=false' do
     it 'should return all anagram groups of size >= x without proper nouns' do
       anagram_1 = Anagram.create(anagram: "ader")
       word_1 = Word.create(word: "read", anagram: anagram_1)
@@ -299,7 +316,7 @@ describe "Anagrams API" do
       get "/anagrams/notaword"
 
       expect(response.status).to eq(200)
-      
+
       response = JSON.parse(body, symbolize_names: true)
 
       expect(response).to eq({ anagrams: [], "notaword": "not_found"})
