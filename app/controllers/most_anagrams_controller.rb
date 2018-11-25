@@ -1,7 +1,7 @@
 class MostAnagramsController < ApplicationController
 
   def index
-    render json: AnagramsPresenter.new.most_anagrams
+    render json: AnagramsPresenter.new.largest_anagram_set
   end
 
 end

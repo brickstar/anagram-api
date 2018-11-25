@@ -2,7 +2,7 @@ class WordsController < ApplicationController
   def create
     params[:words].map do |word|
       anagram = Anagram.find_or_create_by(anagram: word.chars.sort.join)
-      Word.find_or_create_by(word: word, anagram: anagram)
+      Word.find_or_create_by(word: word, anagram: anagram, word_length: word.length)
     end
     render status: 201
   end

@@ -16,18 +16,12 @@ include ApplicationHelper
   end
 
   def anagram_groups_by_size(size, proper_nouns = nil)
-    if proper_nouns == "false"
-      without_proper_nouns(size)
-    else
-      build_anagram_groups_by_size(size)
-    end
+    return without_proper_nouns(size) if proper_nouns == "false"
+    build_anagram_groups_by_size(size)
   end
 
-  def most_anagrams
-    {
-      anagrams_count: @finder.count_of_largest_anagram_set,
-      anagrams: serialized_words_from_largest_anagram_set
-    }
+  def largest_anagram_set
+    build_largest_anagrams_set
   end
 
   private
@@ -84,6 +78,14 @@ include ApplicationHelper
     # seeding the full dictionary where the largest anagram set is more likely
     # to have more than one set of anagrams of the largest size.
     # functionality remains the same with one set vs multiple sets
+
+    def build_largest_anagrams_set
+      {
+        anagrams_count: @finder.count_of_largest_anagram_set,
+        anagrams: serialized_words_from_largest_anagram_set
+      }
+    end
+
     def serialized_words_from_largest_anagram_set(anagrams = nil)
       @finder.words_from_largest_anagram_key.each_slice(@finder.count_of_largest_anagram_set).to_a
     end
