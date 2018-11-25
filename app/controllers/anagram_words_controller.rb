@@ -7,6 +7,8 @@ class AnagramWordsController < ApplicationController
 
   private
     def find_anagram
-      @_anagram ||= Anagram.includes(:words).find_by(anagram: params[:word].chars.sort.join)
+      @_anagram ||= Anagram
+        .includes(:words)
+        .find_by(anagram: params[:word].chars.sort.join)
     end
 end

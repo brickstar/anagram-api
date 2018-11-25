@@ -78,10 +78,6 @@ include ApplicationHelper
       }
     end
 
-    # in the dataset generated from seedsfile the largest anagram set is 7
-    # there is only 1 set of anagrams of size 7. I built these methods to support
-    # seeding the full dictionary where the largest anagram more likely
-    # to have more than one set of anagrams.
     def serialized_words_from_largest_anagram_set
       @finder.words_from_largest_anagram_key.each_slice(@finder.count_of_largest_anagram_set).to_a
     end
