@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe AnagramsPresenter, type: :model do
+RSpec.describe ApplicationHelper, type: :module do
   describe '#helper methods' do
 
     before(:each) do
