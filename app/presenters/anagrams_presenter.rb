@@ -8,7 +8,7 @@ include ApplicationHelper
   end
 
   def anagrams(limit = nil, proper_nouns = nil)
-    return limit_error if invalid_limit?(limit)
+    return invalid_limit_message if invalid_limit?(limit)
     apply_limit(limit) if limit
     delete_proper_nouns if proper_nouns == "false"
     all_anagrams if proper_nouns != "false" && limit.nil?
@@ -16,43 +16,35 @@ include ApplicationHelper
   end
 
   def anagram_groups_by_size(size, proper_nouns = nil)
-    if proper_nouns == "false"
-      without_proper_nouns(size)
-    else
-      build_anagram_groups_by_size(size)
-    end
+    return without_proper_nouns(size) if proper_nouns == "false"
+    build_anagram_groups_by_size(size)
   end
 
-  def most_anagrams
-    {
-      anagrams_count: @finder.count_of_largest_anagram_set,
-      anagrams: serialized_words_from_largest_anagram_set
-    }
+  def largest_anagram_set
+    build_largest_anagrams_set
   end
 
   private
-    def all_anagrams
-      @anagrams = @finder.find_anagrams
-      remove_query_word
-    end
-
-    def delete_proper_nouns
-      @anagrams = @finder.find_anagrams.delete_if do |word|
-        capitalized?(word)
-      end
-      remove_query_word
-    end
-
-    def apply_limit(limit)
-      @anagrams = @finder.find_anagrams.tap { |words| words.delete(@word) }.take(limit.to_i)
+    def invalid_limit_message
+      { message: "invalid limit, must be 0 or greater"}
     end
 
     def invalid_limit?(limit)
       limit.to_i < 0
     end
 
-    def limit_error
-      { message: "invalid limit, must be 0 or greater"}
+    def apply_limit(limit)
+      @anagrams = @finder.find_anagrams.tap { |words| words.delete(@word) }.take(limit.to_i)
+    end
+
+    def delete_proper_nouns
+      @anagrams = delete_capitalized_words(@finder.find_anagrams)
+      remove_query_word
+    end
+
+    def all_anagrams
+      @anagrams = @finder.find_anagrams
+      remove_query_word
     end
 
     def remove_query_word
@@ -79,12 +71,15 @@ include ApplicationHelper
       end
     end
 
-    # in the dataset generated from seedsfile the largest anagram set is 7
-    # there is only 1 set of anagrams of size 7. I built these methods to support
-    # seeding the full dictionary where the largest anagram set is more likely
-    # to have more than one set of anagrams of the largest size.
-    # functionality remains the same with one set vs multiple sets
-    def serialized_words_from_largest_anagram_set(anagrams = nil)
+    def build_largest_anagrams_set
+      {
+        anagrams_count: @finder.count_of_largest_anagram_set,
+        anagrams: serialized_words_from_largest_anagram_set
+      }
+    end
+
+    def serialized_words_from_largest_anagram_set
       @finder.words_from_largest_anagram_key.each_slice(@finder.count_of_largest_anagram_set).to_a
     end
+
 end
