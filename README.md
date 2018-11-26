@@ -1,125 +1,306 @@
-Ibotta Dev Project
-=========
-
-
-# The Project
-
+# anagram-api
 ---
-
-The project is to build an API that allows fast searches for [anagrams](https://en.wikipedia.org/wiki/Anagram). `dictionary.txt` is a text file containing every word in the English dictionary. Ingesting the file doesn’t need to be fast, and you can store as much data in memory as you like.
-
-The API you design should respond on the following endpoints as specified.
-
-- `POST /words.json`: Takes a JSON array of English-language words and adds them to the corpus (data store).
-- `GET /anagrams/:word.json`:
-  - Returns a JSON array of English-language words that are anagrams of the word passed in the URL.
-  - This endpoint should support an optional query param that indicates the maximum number of results to return.
-- `DELETE /words/:word.json`: Deletes a single word from the data store.
-```ruby
-anagrams["abg"].delete("bag")
+## Design Overview
+When building this API I focused on Object Oriented design, performant and reusable Ruby, and providing developer empathy. I built the project with the idea that other developers could jump into the codebase and easily see how the system works. While perhaps a framework that is a little overkill, I chose to build this in Rails using PostgreSQL. I knew ActiveRecord would work well for this particular feature set and wanted to put my best foot forward. Next time building this I might use a lighter-weight framework like Sinatra with Redis as the main data store. Some edge cases considered: invalid limit and size parameters, words not found in the data store.
+___
+## Data Structure 
+There are two tables - Words and Anagrams. Words belong to Anagrams and Anagrams has many  Words. The Anagram has an attribute of "anagram" that functions as a lookup key for all associated words. The key is a set of letters sorted alphabetically that points to all valid words that contain this letter set (e.g. words "read, "dear", and "dare" all have the key "ader"). 
+___
+## Setup
 ```
-- `DELETE /words.json`: Deletes all contents of the data store.
-
-
-**Optional**
-- Endpoint that returns a count of words in the corpus and min/max/median/average word length
-- Respect a query param for whether or not to include proper nouns in the list of anagrams
-- Endpoint that identifies words with the most anagrams
-- Endpoint that takes a set of words and returns whether or not they are all anagrams of each other
-- Endpoint to return all anagram groups of size >= *x*
-- Endpoint to delete a word *and all of its anagrams*
-
-Clients will interact with the API over HTTP, and all data sent and received is expected to be in JSON format
-
-Example (assuming the API is being served on localhost port 3000):
-
-```{bash}
-# Adding words to the corpus
-$ curl -i -X POST -d '{ "words": ["read", "dear", "dare"] }' http://localhost:3000/words.json
-HTTP/1.1 201 Created
-...
-
-# Fetching anagrams
-$ curl -i http://localhost:3000/anagrams/read.json
-HTTP/1.1 200 OK
-...
-{
-  anagrams: [
-    "dear",
-    "dare"
-  ]
-}
-
-# Specifying maximum number of anagrams
-$ curl -i http://localhost:3000/anagrams/read.json?limit=1
-HTTP/1.1 200 OK
-...
-{
-  anagrams: [
-    "dare"
-  ]
-}
-
-# Delete single word
-$ curl -i -X DELETE http://localhost:3000/words/read.json
-HTTP/1.1 204 No Content
-...
-
-# Delete all words
-$ curl -i -X DELETE http://localhost:3000/words.json
-HTTP/1.1 204 No Content
-...
+$ git clone https://brickstar@bitbucket.org/brickstar/anagram-api.git
+$ cd anagram-api
+$ bundle
+$ rake db:{drop,create,migrate,seed}
+$ rails s
 ```
+**Note** - seeding the database is optional. The internal and external test suites will run without seeding. Seeding will 1/50th of the english dictionary for sample data to interact with through http://localhost:3000
+___
+## Testing
+Run the internal test suite from root directory of the project with the command:
+```$ rspec```
+Run the external test suite by spinning up a server from the root directory:
+    ``` $ rails s```
+In a separate shell window run the external test file:
+``` $ ruby anagram_test.rb```
+___
+## Versions
+Rails 5.2.1
+Ruby 2.4.1
+___
+## Performance
+As I built this project and made changes, I would check runtimes from the Heroku logs. Below are 5 examples of actual run times for specific queries to the API. Runtime numbers are accurate if the Heroku dyno is already awake.
 
-Note that a word is not considered to be its own anagram.
+**Base url: ```https://matts-anagram-api.herokuapp.com```**
 
-
-## Tests
-
-We have provided a suite of tests to help as you develop the API. To run the tests you must have Ruby installed ([docs](https://www.ruby-lang.org/en/documentation/installation/)):
-
-```{bash}
-ruby anagram_test.rb
+GET ```/words-analytics```
 ```
-
-Only the first test will be executed, all the others have been made pending using the `pend` method. Delete or comment out the next `pend` as you get each test passing.
-
-If you are running your server somewhere other than localhost port 3000, you can configure the test runner with configuration options described by
-
-```{bash}
-ruby anagram_test.rb -h
+X-Runtimes: 
+0.022723
+0.024680
+0.029116
+0.028791
+0.018330
 ```
-
-You are welcome to add additional test cases if that helps with your development process. The [benchmark-bigo](https://github.com/davy/benchmark-bigo) gem is helpful if you wish to do performance testing on your implementation.
-
-## API Client
-
-We have provided an API client in `anagram_client.rb`. This is used in the test suite, and can also be used in development.
-
-To run the client in the Ruby console, use `irb`:
-
-```{ruby}
-$ irb
-> require_relative 'anagram_client'
-> client = AnagramClient.new
-> client.post('/words.json', nil, { 'words' => ['read', 'dear', 'dare']})
-> client.get('/anagrams/read.json')
+GET ```/anagrams/teal```
 ```
-
-## Documentation
-
-Optionally, you can provide documentation that is useful to consumers and/or maintainers of the API.
-
-Suggestions for documentation topics include:
-
-- Features you think would be useful to add to the API
-- Implementation details (which data store you used, etc.)
-- Limits on the length of words that can be stored or limits on the number of results that will be returned
-- Any edge cases you find while working on the project
-- Design overview and trade-offs you considered
-
-
-# Deliverable
+X-Runtimes:
+0.080124
+0.020433
+0.028277
+0.021079
+0.016915
+```
+GET ```/anagrams/teal?limit=2```
+```
+X-Runtimes:
+0.026110
+0.021023
+0.027955
+0.021754
+0.013616
+```
+GET ```/anagrams/teal?proper_nouns=false```
+```
+X-Runtimes:
+0.045797
+0.044534
+0.032456
+0.049999
+0.032273
+```
+GET ```/word-group-size/size=5```
+```
+X-Runtimes:
+0.020636
+0.025218
+0.032757
+0.021218
+0.019185
+```
+GET ```/word-group-size/size=2```
+This is the slowest endpoint in the system and was refactored for better perfomance.
+```
+X-Runtimes:
+0.187408
+0.183534
+0.160630
+0.213210
+0.191499
+```
+GET ```/words-with-most-anagrams```
+```
+X-Runtimes:
+0.033919
+0.024291
+0.024303
+0.019001
+0.017257
+```
+GET ```/check-anagrams```
+```
+X-Runtimes:
+0.002257
+0.006030
+0.006424
+0.003071
+0.002796
+```
+___
+___
+___
+# **Endpoints**
+___
+## **GET requests**
 ---
+#### **Get list of anagrams for a given word:**
+* **Returns a JSON array of English-language words that are anagrams of the word passed in the URL.**
+* **Supports an optional query param `limit=[integer]` that indicates the maximum number of results to return.**
+* **Endpoint:** `/anagrams/:word`
+* **Method:** `GET`
+* **Optional Params:**
+   `limit=[integer]`
+   `proper_noun=[boolean]`
+* **Success Response:**
+  * **Status:** 200 
+##### Example: 
+`curl -i https://matts-anagram-api.herokuapp.com/anagrams/teal.json`
+  ```json
+{
+    "word": "teal",
+    "anagrams": [
+                    "tale",
+                    "tael",
+                    "leat",
+                    "late",
+                    "laet",
+                    "atle"
+                ]
+}
+  ```
+#### Get word analytics:
+* **Endpoint:** `/words-analytics`
+* **Method:** `GET`
+* **Optional Params:** N/A
+* **Success Response:**
+  * **Status:** 200
+##### Example: 
+`curl -i https://matts-anagram-api.herokuapp.com/words-analytics`
+```json
+{
+    "total_word_count": 4667,
+    "shortest_word": 2,
+    "longest_word": 23,
+    "avg_word_length": 9.58,
+    "median_word_length": 9
+}
+```
 
-Please provide the code for the assignment either in a private repository (GitHub or Bitbucket) or as a zip file. If you have a deliverable that is deployed on the web please provide a link, otherwise give us instructions for running it locally.
+#### Check if group of words are anagrams of each other:
+
+* **Endpoint:** `/check-anagrams`
+* **Method:** `GET`
+* **Optional Params:** N/A
+* **Data Params:** `"words": ["read", "dear", "dare"]`
+* **Success Response:**
+  * **Status:** 200
+#####  Examples:
+`curl -i "http://matts-anagram-api.herokuapp.com/check-anagrams?words\[\]=read&words\[\]=dare&words\[\]=dear"`
+
+```json
+{
+    "anagrams?": true
+}
+```
+`curl -i  "http://matts-anagram-api.herokuapp.com/check-anagrams?words\[\]=read&words\[\]=dare&words\[\]=dear&words=\[\]=xylophone"`
+```json
+{
+    "anagrams?": false
+}
+```
+#### Return set of words with most anagrams:
+
+* **Endpoint:** `/words-with-most-anagrams`
+* **Method:** `GET`
+* **Optional Params:** 
+```proper_nouns=[boolean]```
+* **Success Response:**
+  * **Status:** 200
+##### Example: 
+`curl -i http://localhost:3000/words-with-most-anagrams.json`
+```json
+{
+    "anagrams_count": 7,
+    "anagrams": [
+                    [
+                        "teal",
+                        "tale",
+                        "tael",
+                        "leat",
+                        "late",
+                        "laet",
+                        "atle"
+                    ]
+                ]
+}
+```
+
+#### Return lists of anagrams by group size:
+**Returns sets of anagrams greater than or equal to the specified size paramater, grouped by size.**
+* **Endpoint** `/word-group-size`
+* **Method:** `GET`
+* **Optional Params:** 
+`size=[integer]`
+`proper_nouns=[boolean]`
+* **Success Response:**
+  * **Status:** 200
+##### Example: 
+`curl -i http://matts-anagram-api.herokuapp.com/word-group-size?size=5`
+```json
+[
+    {
+        "sets_of": 7,
+        "anagrams": [
+                        [
+                            "teal",
+                            "tale",
+                            "tael",
+                            "leat",
+                            "late",
+                            "laet",
+                            "atle"
+                        ]
+                    ]
+    },
+    {
+        "sets_of": 5,
+        "anagrams": [
+                        [
+                            "scrae",
+                            "scare",
+                            "ceras",
+                            "caser",
+                            "carse"
+                        ],
+                        [
+                            "slee",
+                            "sele",
+                            "seel",
+                            "lees",
+                            "else"
+                        ],
+                            ...
+]
+```
+---
+## **POST Requests**
+---
+#### Add new words to the data store:
+* **Takes an array of words and adds them to the database**
+* **Adds an anagram key for word**
+* **Words and anagram keys are only added if they do not already exist in the database**
+* **Endpoint:** `/words`
+* **Method:** `POST`
+* **Optional Params:** N/A
+* **Success Response:**
+  * **Status:** 201
+* **Data Params**: `'{ "words": ["read", "dear", "dare"] }'`
+##### Example: 
+`curl -X POST "http://localhost:3000/words?words\[\]=read&words\[\]=dare&words\[\]=dear"`
+___
+## **DELETE Requests**
+**Note - URLs provided here are for localhost only as to preserve the Heroku database**
+___
+#### Delete a single word from the data store:
+
+* **Endpoint** `/words/:word`
+* **Method:** `DELETE`
+* **Optional Params:** N/A
+* **Success Response:**
+  * **Status:** 200
+##### Example: 
+`curl -i -X DELETE http://localhost:3000/words/read.json`
+  
+#### Delete a word and associated anagrams:
+* **Deletes a single word and all asscociated anagrams**
+* **Deletes anagram key for specified word**
+* **Endpoint:** `/delete-anagrams-for-word/:word`
+* **Method:** `DELETE`
+* **Optional Params:** N/A
+* **Success Response:**
+  * **Status:** 204
+##### Example: 
+`curl -i -X DELETE http://localhost:3000/delete-anagrams-for-word/teal.json`
+
+#### Delete all words and anagram keys:
+* **Deletes all data from data store**
+* **URL** `/words`
+* **Method:** `DELETE`
+*  **URL Params** `N/A`
+* **Success Response:**
+  * **Status:** 204
+##### Example: 
+`curl -i -X DELETE http://localhost:3000/words.json`
+
+----
+  
