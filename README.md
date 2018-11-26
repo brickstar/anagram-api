@@ -8,7 +8,7 @@ There are two tables - Words and Anagrams. Words belong to Anagrams and Anagrams
 ___
 ## Setup
 ```
-$ git clone https://brickstar@bitbucket.org/brickstar/anagram-api.git
+$ clone this repository
 $ cd anagram-api
 $ bundle
 $ rake db:{drop,create,migrate,seed}
