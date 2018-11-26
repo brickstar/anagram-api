@@ -13,6 +13,9 @@ ___
 ## Setup
 ```
 $ clone this repository - git clone https://<YOURUSERNAME>@bitbucket.org/brickstar/anagram-api.git
+```
+If access is denied feel free to reach out to me - brickstar@gmail.com
+```
 $ cd anagram-api
 $ bundle
 $ rake db:{drop,create,migrate,seed}
@@ -262,7 +265,8 @@ ___
                             "lees",
                             "else"
                         ],
-                            ...
+                        ...
+    }                    
 ]
 ```
 ---
@@ -280,6 +284,8 @@ ___
 ##### Example:
 `curl -X POST "http://localhost:3000/words?words\[\]=read&words\[\]=dare&words\[\]=dear"`
 ___
+
+
 ## **DELETE Requests**
 **Note - URLs provided here are for localhost only as to preserve the Heroku database**
 ___
@@ -288,8 +294,7 @@ ___
 * **Endpoint** `/words/:word`
 * **Method:** `DELETE`
 * **Optional Params:** N/A
-* **Success Response:**
-  * **Status:** 200
+* **Status:** 200
 ##### Example:
 `curl -i -X DELETE http://localhost:3000/words/read.json`
 
@@ -299,8 +304,7 @@ ___
 * **Endpoint:** `/delete-anagrams-for-word/:word`
 * **Method:** `DELETE`
 * **Optional Params:** N/A
-* **Success Response:**
-  * **Status:** 204
+ * **Status:** 204
 ##### Example:
 `curl -i -X DELETE http://localhost:3000/delete-anagrams-for-word/teal.json`
 
@@ -309,8 +313,7 @@ ___
 * **URL** `/words`
 * **Method:** `DELETE`
 *  **URL Params** `N/A`
-* **Success Response:**
-  * **Status:** 204
+* **Status:** 204
 ##### Example:
 `curl -i -X DELETE http://localhost:3000/words.json`
 
