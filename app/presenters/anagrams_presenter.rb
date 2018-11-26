@@ -1,6 +1,5 @@
 class AnagramsPresenter
 include ApplicationHelper
-
   def initialize(word = nil)
     @word = word
     @anagrams = []
@@ -81,5 +80,4 @@ include ApplicationHelper
     def serialized_words_from_largest_anagram_set
       @finder.words_from_largest_anagram_key.each_slice(@finder.count_of_largest_anagram_set).to_a
     end
-
 end

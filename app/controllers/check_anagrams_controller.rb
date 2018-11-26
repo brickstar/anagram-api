@@ -8,7 +8,6 @@ class CheckAnagramsController < ApplicationController
   end
 
   private
-
     def words_to_validate
       params[:words].group_by { |word| word.downcase.chars.sort }.values
     end

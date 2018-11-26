@@ -5,5 +5,4 @@ class WordGroupSizeController < ApplicationController
   def index
     render json: AnagramsPresenter.new.anagram_groups_by_size(params[:size], params[:proper_nouns]), status: 200
   end
-
 end
