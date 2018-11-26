@@ -3,9 +3,13 @@
 ## Design Overview
 When building this API I focused on Object Oriented design, performant and reusable Ruby, and providing developer empathy. I built the project with the idea that other developers could jump into the codebase and easily see how the system works. While perhaps a framework that is a little overkill, I chose to build this in Rails using PostgreSQL. I knew ActiveRecord would work well for this particular feature set and wanted to put my best foot forward. Next time building this I might use a lighter-weight framework like Sinatra with Redis as the main data store. Some edge cases considered: invalid limit and size parameters, words not found in the data store.
 ___
+
+
 ## Data Structure
-There are two tables - Words and Anagrams. Words belong to Anagrams and Anagrams has many  Words. The Anagram has an attribute of "anagram" that functions as a lookup key for all associated words. The key is a set of letters sorted alphabetically that points to all valid words that contain this letter set (e.g. words "read, "dear", and "dare" all have the key "ader").
+There are two tables - Words and Anagrams. A word belongs to an anagram and an anagram has many words. The Anagram has an attribute of "anagram" that functions as a lookup key for all associated words. The key is a set of letters sorted alphabetically that points to all valid words that contain this letter set (e.g. words "read, "dear", and "dare" all have the key "ader").
 ___
+
+
 ## Setup
 ```
 $ clone this repository - git clone https://<YOURUSERNAME>@bitbucket.org/brickstar/anagram-api.git
@@ -16,6 +20,8 @@ $ rails s
 ```
 **Note** - seeding the database is optional. The internal and external test suites will run without seeding. Seeding will provide 1/50th of the English dictionary for sample data to interact with through: http://localhost:3000. Base URL for Heroku: https://matts-anagram-api.herokuapp.com. Currently the Heroku dataset also contains 1/50th of the English dictionary.
 ___
+
+
 ## Testing
 Run the internal test suite from root directory of the project with the command:
 ```$ rspec```
@@ -28,6 +34,8 @@ ___
 Rails 5.2.1
 Ruby 2.4.1
 ___
+
+
 ## Performance
 As I built this project and made changes, I would check runtimes from the Heroku logs. Below are 5 examples of actual run times for specific queries to the API. Runtime numbers are accurate if the Heroku dyno is already awake.
 
@@ -109,10 +117,16 @@ X-Runtimes:
 ___
 ___
 ___
+
+
+
 # **Endpoints**
 ___
+
+
 ## **GET requests**
 ---
+
 #### **Get list of anagrams for a given word:**
 * **Returns a JSON array of English-language words that are anagrams of the word passed in the URL.**
 * **Supports an optional query param `limit=[integer]` that indicates the maximum number of results to return.**
@@ -121,8 +135,7 @@ ___
 * **Optional Params:**
    `limit=[integer]`
    `proper_noun=[boolean]`
-* **Success Response:**
-  * **Status:** 200
+* **Status:** 200
 ##### Example:
 `curl -i https://matts-anagram-api.herokuapp.com/anagrams/teal.json`
   ```json
@@ -138,12 +151,13 @@ ___
                 ]
 }
   ```
+
+
 #### Get word analytics:
 * **Endpoint:** `/words-analytics`
 * **Method:** `GET`
 * **Optional Params:** N/A
-* **Success Response:**
-  * **Status:** 200
+* **Status:** 200
 ##### Example:
 `curl -i https://matts-anagram-api.herokuapp.com/words-analytics`
 ```json
@@ -162,8 +176,7 @@ ___
 * **Method:** `GET`
 * **Optional Params:** N/A
 * **Data Params:** `"words": ["read", "dear", "dare"]`
-* **Success Response:**
-  * **Status:** 200
+* **Status:** 200
 #####  Examples:
 `curl -i "http://matts-anagram-api.herokuapp.com/check-anagrams?words\[\]=read&words\[\]=dare&words\[\]=dear"`
 
@@ -178,14 +191,15 @@ ___
     "anagrams?": false
 }
 ```
+
+
 #### Return set of words with most anagrams:
 
 * **Endpoint:** `/words-with-most-anagrams`
 * **Method:** `GET`
 * **Optional Params:**
 ```proper_nouns=[boolean]```
-* **Success Response:**
-  * **Status:** 200
+* **Status:** 200
 ##### Example:
 `curl -i http://localhost:3000/words-with-most-anagrams.json`
 ```json
@@ -212,8 +226,7 @@ ___
 * **Optional Params:**
 `size=[integer]`
 `proper_nouns=[boolean]`
-* **Success Response:**
-  * **Status:** 200
+* **Status:** 200
 ##### Example:
 `curl -i http://matts-anagram-api.herokuapp.com/word-group-size?size=5`
 ```json
@@ -262,8 +275,7 @@ ___
 * **Endpoint:** `/words`
 * **Method:** `POST`
 * **Optional Params:** N/A
-* **Success Response:**
-  * **Status:** 201
+* **Status:** 201
 * **Data Params**: `'{ "words": ["read", "dear", "dare"] }'`
 ##### Example:
 `curl -X POST "http://localhost:3000/words?words\[\]=read&words\[\]=dare&words\[\]=dear"`
