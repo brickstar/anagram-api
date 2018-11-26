@@ -13,7 +13,7 @@ anagram_hash = raw_dictionary.downcase.split.each_with_object(Hash.new []) do |w
 end
 
 anagram_hash.map.with_index do |anagram, index|
-  new_anagram = Anagram.create!(anagram: anagram[0]) if index % 50 == 0
+  new_anagram = Anagram.create(anagram: anagram[0]) if index % 50 == 0
   anagram[1].each do |word|
     Word.create(word: word, word_length: word.length, anagram: new_anagram) if index % 50 == 0
   end

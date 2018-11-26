@@ -1,5 +1,5 @@
 class AnagramsPresenter
-include ApplicationHelper
+  include ApplicationHelper
   def initialize(word = nil)
     @word = word
     @anagrams = []
