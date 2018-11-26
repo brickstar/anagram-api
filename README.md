@@ -14,7 +14,7 @@ $ bundle
 $ rake db:{drop,create,migrate,seed}
 $ rails s
 ```
-**Note** - seeding the database is optional. The internal and external test suites will run without seeding. Seeding will 1/50th of the english dictionary for sample data to interact with through http://localhost:3000
+**Note** - seeding the database is optional. The internal and external test suites will run without seeding. Seeding will provide 1/50th of the English dictionary for sample data to interact with through: http://localhost:3000. Base URL for Heroku: https://matts-anagram-api.herokuapp.com. Currently the Heroku dataset also contains 1/50th of the English dictionary.
 ___
 ## Testing
 Run the internal test suite from root directory of the project with the command:
@@ -303,4 +303,3 @@ ___
 `curl -i -X DELETE http://localhost:3000/words.json`
 
 ----
-  
