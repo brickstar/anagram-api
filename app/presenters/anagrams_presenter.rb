@@ -60,7 +60,6 @@ class AnagramsPresenter
       keys.map { |key| key.words.pluck(:word) }
     end
 
-    # takes hash of anagrams grouped by size and rebuilds without proper nouns
     def without_proper_nouns(size)
       build_anagram_groups_by_size(size).inject(Array.new) do |ary, element, hash = Hash.new([])|
         hash[:sets_of] = element[:sets_of]
