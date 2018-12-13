@@ -1,7 +1,5 @@
 # anagram-api
 ---
-## Design Overview
-When building this API I focused on Object Oriented design, performant and reusable Ruby, and providing developer empathy. I built the project with the idea that other developers could jump into the codebase and easily see how the system works. While perhaps a framework that is a little overkill, I chose to build this in Rails using PostgreSQL. I knew ActiveRecord would work well for this particular feature set and wanted to put my best foot forward. Next time building this I might use a lighter-weight framework like Sinatra with Redis as the main data store. Some edge cases considered: invalid limit and size parameters, words not found in the data store.
 ___
 
 
